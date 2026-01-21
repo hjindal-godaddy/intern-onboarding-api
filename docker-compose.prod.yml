@@ -1,0 +1,51 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: intern_onboarding_mongodb_prod
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: intern_onboarding
+    volumes:
+      - mongodb_data_prod:/data/db
+    networks:
+      - intern_onboarding_network_prod
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: intern_onboarding_api_prod
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      MONGODB_URL: mongodb://mongodb:27017
+      DATABASE_NAME: intern_onboarding
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      APP_NAME: Intern Onboarding API
+      DEBUG: "False"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - intern_onboarding_network_prod
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  intern_onboarding_network_prod:
+    driver: bridge
+
+volumes:
+  mongodb_data_prod:
