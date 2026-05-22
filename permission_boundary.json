@@ -5,51 +5,65 @@
       "Sid": "DataZonePermissions",
       "Effect": "Allow",
       "Action": [
-        "datazone:*",
-        "sagemaker:*",
-        "ram:AcceptResourceShareInvitation",
-        "ram:GetResourceShareInvitations"
+        "datazone:*"
       ],
       "Resource": "*"
     },
     {
-      "Sid": "EMRServerlessPermissions",
+      "Sid": "DataZoneLineagePermissions",
       "Effect": "Allow",
       "Action": [
-        "emr-serverless:*",
-        "emr:*"
+        "datazone:PutLineageEvent",
+        "datazone:CreateAsset",
+        "datazone:UpdateAsset",
+        "datazone:GetAsset",
+        "datazone:DeleteAsset",
+        "datazone:CreateLineageEvent",
+        "datazone:PutMetadataEvent",
+        "datazone:CreateDataSource",
+        "datazone:UpdateDataSource",
+        "datazone:GetDataSource"
       ],
       "Resource": "*"
     },
     {
-      "Sid": "SecretsManagerPermissions",
+      "Sid": "SageMakerLineagePermissions",
       "Effect": "Allow",
       "Action": [
-        "secretsmanager:GetSecretValue",
-        "secretsmanager:DescribeSecret",
-        "secretsmanager:ListSecrets"
+        "sagemaker:AddAssociation",
+        "sagemaker:CreateAction",
+        "sagemaker:CreateArtifact",
+        "sagemaker:CreateContext",
+        "sagemaker:UpdateAction",
+        "sagemaker:UpdateArtifact",
+        "sagemaker:UpdateContext",
+        "sagemaker:DescribeAction",
+        "sagemaker:DescribeArtifact",
+        "sagemaker:DescribeContext",
+        "sagemaker:ListAssociations",
+        "sagemaker:QueryLineage"
       ],
       "Resource": "*"
     },
     {
-      "Sid": "KMSPermissions",
+      "Sid": "LakeFormationPermissions",
       "Effect": "Allow",
       "Action": [
-        "kms:Decrypt",
-        "kms:DescribeKey",
-        "kms:GenerateDataKey"
-      ],
-      "Resource": "arn:aws:kms:us-west-2:255575434142:key/*"
-    },
-    {
-      "Sid": "S3Permissions",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:ListBucket",
-        "s3:DeleteObject",
-        "s3:GetBucketLocation"
+        "lakeformation:GetDataLakeSettings",
+        "lakeformation:PutDataLakeSettings",
+        "lakeformation:GetDataAccess",
+        "lakeformation:GrantPermissions",
+        "lakeformation:RevokePermissions",
+        "lakeformation:ListPermissions",
+        "lakeformation:BatchGrantPermissions",
+        "lakeformation:GetResourceLFTags",
+        "lakeformation:ListLFTags",
+        "lakeformation:AddLFTagsToResource",
+        "lakeformation:RemoveLFTagsFromResource",
+        "lakeformation:RegisterResource",
+        "lakeformation:DeregisterResource",
+        "lakeformation:DescribeResource",
+        "lakeformation:ListResources"
       ],
       "Resource": "*"
     },
@@ -61,15 +75,83 @@
         "glue:GetDatabases",
         "glue:GetTable",
         "glue:GetTables",
+        "glue:CreateDatabase",
+        "glue:CreateTable",
+        "glue:UpdateDatabase",
+        "glue:UpdateTable",
+        "glue:DeleteDatabase",
+        "glue:DeleteTable",
         "glue:GetPartition",
         "glue:GetPartitions",
-        "glue:CreateTable",
-        "glue:UpdateTable",
-        "glue:DeleteTable",
-        "glue:BatchCreatePartition",
         "glue:CreatePartition",
         "glue:UpdatePartition",
-        "glue:DeletePartition"
+        "glue:DeletePartition",
+        "glue:BatchCreatePartition",
+        "glue:GetCatalogImportStatus"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "RAMPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "ram:AcceptResourceShareInvitation",
+        "ram:GetResourceShareInvitations",
+        "ram:ListResources",
+        "ram:GetResourceShares",
+        "ram:CreateResourceShare",
+        "ram:DeleteResourceShare",
+        "ram:AssociateResourceShare",
+        "ram:DisassociateResourceShare"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "S3Permissions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetBucketAcl",
+        "s3:PutBucketAcl",
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "IAMPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole",
+        "iam:GetRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:CreateServiceLinkedRole",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "KMSPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:DescribeKey",
+        "kms:CreateGrant",
+        "kms:RetireGrant",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "STSPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole",
+        "sts:GetCallerIdentity"
       ],
       "Resource": "*"
     },
@@ -81,35 +163,6 @@
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "logs:DescribeLogStreams"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "IAMPassRolePermissions",
-      "Effect": "Allow",
-      "Action": [
-        "iam:PassRole"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "iam:PassedToService": [
-            "emr-serverless.amazonaws.com",
-            "datazone.amazonaws.com"
-          ]
-        }
-      }
-    },
-    {
-      "Sid": "EC2NetworkPermissions",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeVpcs",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeNetworkInterfaces",
-        "ec2:CreateNetworkInterface",
-        "ec2:DeleteNetworkInterface"
       ],
       "Resource": "*"
     }
